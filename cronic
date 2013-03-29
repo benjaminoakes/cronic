@@ -20,11 +20,12 @@ trap cleanup SIGINT
 trap cleanup SIGTERM
 
 function log {
+    local facility="cron"
     local level="$1"
     local tag="$2"
     local file="$3"
 
-    logger --priority "cron.$level" \
+    logger --priority "$facility.$level" \
            --tag      "cronic-$tag[$$]" \
            --file     "$file"
 }
