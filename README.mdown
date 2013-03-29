@@ -17,6 +17,27 @@ cron: unwanted emailed output, or "cram" (cron spam). If the Unix Haters
 list was still active, I would submit the rant below to gain membership.
 - [Chuck Houpt](http://habilis.net/chuck/)
 
+## Installation
+
+Place `cronic` in `/usr/local/bin`.  Note that you may need to set the path in your `crontab` like so:
+
+	PATH="/usr/local/bin:/usr/bin:/bin"
+	0 1 * * * cronic backup
+
+To verify that `cronic` works, you can make a simple `crontab` and check your email:
+
+	MAILTO="you@organization.org"
+	PATH="/usr/local/bin:/usr/bin:/bin"
+	* * * * * cronic uname
+
+You can also monitor the output in your `cron` log (e.g. `tail -f /var/log/cron`, location may vary on your system):
+
+	Mar 29 17:25:01 hostname cronic-stdout[29170]: Linux
+
+To test that errors send emails, change to something that you expect to fail (e.g. `cronic fail`).  The `cron` log should show something like this as well:
+
+	Mar 29 17:32:01 hostname cronic-stderr[29327]: /usr/local/bin/cronic: line 34: fail: command not found
+
 ## The Disease
 
 One of the best features of cron is its automatic email - it is also its 
