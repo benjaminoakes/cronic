@@ -10,6 +10,15 @@ OUT=/tmp/cronic.out.$$
 ERR=/tmp/cronic.err.$$
 TRACE=/tmp/cronic.trace.$$
 
+function cleanup {
+    rm -f "$OUT"
+    rm -f "$ERR"
+    rm -f "$TRACE"
+}
+
+trap cleanup SIGINT
+trap cleanup SIGTERM
+
 function log {
     local level="$1"
     local tag="$2"
@@ -60,6 +69,4 @@ if [ $RESULT -ne 0 -o -s "$ERR" ]
     fi
 fi
 
-rm -f "$OUT"
-rm -f "$ERR"
-rm -f "$TRACE"
+cleanup
