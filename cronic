@@ -10,6 +10,16 @@ OUT=/tmp/cronic.out.$$
 ERR=/tmp/cronic.err.$$
 TRACE=/tmp/cronic.trace.$$
 
+function log {
+    local level="$1"
+    local tag="$2"
+    local file="$3"
+
+    logger --priority "cron.$level" \
+           --tag      "cronic-$tag[$$]" \
+           --file     "$file"
+}
+
 set +e
 "$@" >$OUT 2>$TRACE
 RESULT=$?
@@ -23,8 +33,13 @@ else
     ERR=$TRACE
 fi
 
+log info stdout "$OUT"
+
 if [ $RESULT -ne 0 -o -s "$ERR" ]
     then
+
+    log err stderr "$ERR"
+
     echo "Cronic detected failure or error output for the command:"
     echo "$@"
     echo
@@ -37,6 +52,8 @@ if [ $RESULT -ne 0 -o -s "$ERR" ]
     cat "$OUT"
     if [ $TRACE != $ERR ]
     then
+        log err trace "$TRACE"
+
         echo
         echo "TRACE-ERROR OUTPUT:"
         cat "$TRACE"
